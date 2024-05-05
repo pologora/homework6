@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-function debounce(fn, delay) {
+function debounce(fn, delay = 300) {
   let timeoutId;
   return (...args) => {
     clearTimeout(timeoutId);
