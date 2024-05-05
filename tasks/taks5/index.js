@@ -1,22 +1,34 @@
-function throttle(fn, interval = 1000) {
-  let called = false;
+function throttle(fn, delay = 3000) {
+  let shouldWait = false;
+  let lastArgs = null;
 
   return (...args) => {
-    if (!called) {
-      called = true;
+    if (shouldWait) {
+      lastArgs = args;
+    } else {
       fn(...args);
+      shouldWait = true;
+      setTimeout(helper, delay);
+    }
 
-      setTimeout(() => {
-        called = false;
-      }, interval);
+    function helper() {
+      if (lastArgs) {
+        fn(...lastArgs);
+        lastArgs = null;
+        shouldWait = true;
+        setTimeout(helper, delay);
+      } else {
+        shouldWait = false;
+      }
     }
   };
 }
+
 function onScroll(event) {
   // eslint-disable-next-line no-console
-  console.log('Scroll event: ', event);
+  console.log('Scroll event: ', event.timeStamp);
 }
 
-const throttledScrollHandler = throttle(onScroll, 3000);
+const throttledScrollHandler = throttle(onScroll);
 
 window.addEventListener('scroll', throttledScrollHandler);
